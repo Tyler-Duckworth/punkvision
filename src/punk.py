@@ -119,6 +119,7 @@ pipe.add_vpl(frcvpl.DrawMeter(key="contours"))
 pipe.add_vpl(FPSCounter())
 
 pipe.add_vpl(frcvpl.DumpInfo(key="contours"))
+pipe.add_vpl(frcvpl.CameraStream())
 
 
 cam_props = CameraProperties()

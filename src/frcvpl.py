@@ -29,6 +29,12 @@ import math
 import os
 import glob
 import pathlib
+has_cscore = False
+try:
+    from cscore import CameraServer
+    has_cscore = True
+except:
+    print("Unable to locate module robotpy-cscore")
 
 from http.server import BaseHTTPRequestHandler,HTTPServer
 from socketserver import ThreadingMixIn
@@ -394,4 +400,18 @@ class DumpInfo(vpl.VPL):
         if not hasattr(self, "last_time") or time.time() - self.last_time > 1.0 / 24.0:
             self.write()
             self.last_time = time.time()
+        return image, data
+
+class CameraStream(vpl.VPL):
+
+    def process(self, pipe, image, data):
+        height, width, channels = image.shape
+        if has_cscore:
+            if not hasattr(self, "is_init"):
+                self.is_init = True
+
+                cs = CameraServer.getInstance()
+                self.output = cs.putVideo("Vision", height, width)
+            
+            self.output.putFrame(image)
         return image, data
